@@ -41,3 +41,5 @@ jspm_packages
 .env
 deploy.env
 event.json
+context.json
+undefined
