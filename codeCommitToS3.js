@@ -1,15 +1,27 @@
-// Require nodegit
-var Git = require("nodegit");
+#!/usr/bin/env node
 
-// Your CodeCommit Repo
-var myCodeCommitRepo = 'https://github.com/qops1981/lambda-cc-s3.git';
+var fils = require("fs"),			// FileSystem
+    path = require("path"),			// Path
+    sgit = require("simple-git")(),	// Git Interface
+    tloc = '/tmp/wrd-resume-site/',	// Repo Local Store
+	repo = 'https://git-codecommit.us-east-1.amazonaws.com/v1/repos/wrd-resume-site';	// Git Repo Location
 
-// Pointer to the tmp path
-var tmpPath = '/tmp/lambda-cc-s3';
+sgit.clone(repo, tloc).then(function(){
 
-Git.Clone("myCodeCommitRepo", "tmpPath");
+	fils.readdir(tloc, function (err, files) {
+		if (err) {
+        throw err;
+    	}
 
-// Lambda Function Handeler
-/*exports.codeCommitToS3 = function(event, context, callback) {
-   console.log(localPath); 
-}*/
+	    files.map(function (file) {
+	        return path.join(tloc, file);
+	    }).filter(function (file) {
+	        return fils.statSync(file).isFile();
+	    }).forEach(function (file) {
+	        console.log("%s (%s)", file, path.extname(file));
+	    });
+	});
+
+});
+
+
